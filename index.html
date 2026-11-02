@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATELIER | Propuesta de proyecto CRUD</title>
+  <style>
+    :root {
+      --ink: #24221f;
+      --muted: #716b63;
+      --paper: #f7f4ee;
+      --cream: #eee8dc;
+      --line: #dcd4c7;
+      --gold: #a88b5d;
+      --white: #fffefa;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.7;
+    }
+    .topbar {
+      padding: 17px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      background: rgba(247,244,238,.94);
+    }
+    .brand { font-family: Georgia, serif; letter-spacing: .22em; font-size: 19px; }
+    .topbar span { color: var(--muted); font-size: 11px; letter-spacing: .15em; text-transform: uppercase; }
+    .hero {
+      min-height: 440px;
+      padding: 90px 10% 85px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: var(--cream);
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: normal;
+      letter-spacing: .08em;
+      line-height: 1;
+      margin: 22px 0 18px;
+    }
+    .hero p { max-width: 650px; color: #514b43; font-size: 17px; margin: 0; }
+    .hero-note { margin-top: 35px; font-size: 11px; letter-spacing: .15em; color: var(--muted); text-transform: uppercase; }
+    nav {
+      display: flex; flex-wrap: wrap; gap: 20px;
+      padding: 15px 7%; border-bottom: 1px solid var(--line);
+      background: var(--white);
+    }
+    nav a { color: var(--muted); text-decoration: none; font-size: 12px; }
+    nav a:hover { color: var(--gold); }
+    main { max-width: 1050px; margin: 0 auto; padding: 55px 28px 80px; }
+    section { margin-bottom: 65px; scroll-margin-top: 25px; }
+    .section-number { color: var(--gold); font-size: 11px; letter-spacing: .18em; font-weight: bold; }
+    h2 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 34px; font-weight: normal; line-height: 1.2;
+      margin: 8px 0 18px;
+    }
+    h3 { font-family: Georgia, serif; font-size: 20px; font-weight: normal; margin: 0 0 8px; }
+    p { margin: 0 0 14px; color: #514d47; }
+    .lead { font-size: 18px; color: #39352f; max-width: 850px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
+    .card {
+      background: var(--white); border: 1px solid var(--line);
+      padding: 23px; min-height: 150px;
+    }
+    .card .tag { color: var(--gold); text-transform: uppercase; letter-spacing: .15em; font-size: 10px; font-weight: bold; }
+    .card h3 { margin-top: 10px; }
+    .steps { counter-reset: step; display: grid; gap: 0; margin-top: 20px; }
+    .step {
+      counter-increment: step; display: grid; grid-template-columns: 48px 1fr;
+      gap: 17px; padding: 19px 0; border-bottom: 1px solid var(--line);
+    }
+    .step::before {
+      content: counter(step, decimal-leading-zero);
+      color: var(--gold); font-family: Georgia, serif; font-size: 22px;
+    }
+    .step h3 { margin-bottom: 4px; }
+    .step p { margin: 0; }
+    .pill {
+      display: inline-block; border: 1px solid var(--gold); color: #806943;
+      padding: 4px 10px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    }
+    .note {
+      background: #eee8dc; border-left: 3px solid var(--gold);
+      padding: 17px 20px; margin-top: 20px;
+    }
+    .note p { margin: 0; }
+    ul { color: #514d47; padding-left: 21px; }
+    li { margin: 7px 0; }
+    .db {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 20px;
+    }
+    .db-item { background: var(--white); border: 1px solid var(--line); padding: 15px 17px; }
+    .db-item strong { display: block; color: var(--ink); font-size: 14px; margin-bottom: 3px; }
+    .db-item span { color: var(--muted); font-size: 13px; }
+    .closing {
+      background: var(--ink); color: var(--white); padding: 35px;
+    }
+    .closing h2 { color: var(--white); }
+    .closing p { color: #ddd5c9; }
+    footer {
+      padding: 22px 7%; border-top: 1px solid var(--line);
+      color: var(--muted); font-size: 11px; letter-spacing: .08em;
+      display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    }
+    @media (max-width: 650px) {
+      .hero { padding: 65px 8%; min-height: 390px; }
+      main { padding: 40px 20px 60px; }
+      .grid, .db { grid-template-columns: 1fr; }
+      h2 { font-size: 29px; }
+      nav { gap: 12px; }
+    }
+    @media print {
+      body { background: white; }
+      nav { display: none; }
+      .hero { min-height: auto; padding: 55px 8%; }
+      main { padding-top: 35px; }
+      section { break-inside: avoid; }
+      .card, .db-item { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">ATELIER</div>
+    <span>Propuesta de proyecto · CRUD</span>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Proyecto de desarrollo web</div>
+    <h1>ATELIER</h1>
+    <p>Una plataforma digital para descubrir, crear y comprar moda independiente. Un espacio donde pequeños emprendimientos y diseñadores puedan mostrar sus prendas, construir una comunidad y llegar a nuevos compradores.</p>
+    <div class="hero-note">Moda independiente · Tiendas verificadas · Comunidad</div>
+  </div>
+
+  <nav aria-label="Navegación del informe">
+    <a href="#idea">La idea</a>
+    <a href="#objetivos">Objetivos</a>
+    <a href="#funcionamiento">Funcionamiento</a>
+    <a href="#verificacion">Verificación</a>
+    <a href="#secciones">Secciones</a>
+    <a href="#tecnologia">Desarrollo</a>
+  </nav>
+
+  <main>
+    <section id="idea">
+      <div class="section-number">01 / DESCRIPCIÓN GENERAL</div>
+      <h2>¿De qué se trata?</h2>
+      <p class="lead">ATELIER sería una plataforma de moda independiente que reúne distintas tiendas creadas por personas o grupos interesados en diseñar y confeccionar sus propias prendas.</p>
+      <p>La idea es que cada grupo pueda crear su propia tienda dentro de la página, darle una identidad y publicar las prendas que diseña y confecciona. Por ejemplo, podrían existir marcas con estilos urbanos, vintage, minimalistas o románticos. De esta manera, los usuarios tendrían un catálogo variado para explorar y podrían encontrar propuestas diferentes a las de las grandes cadenas de ropa.</p>
+      <p>No quiero que sea solamente una tienda online: también me gustaría que sirva para que los emprendimientos pequeños se den a conocer, organicen sus productos y puedan formar parte de una comunidad.</p>
+    </section>
+
+    <section id="objetivos">
+      <div class="section-number">02 / PROPÓSITO</div>
+      <h2>Objetivos del proyecto</h2>
+      <div class="grid">
+        <article class="card">
+          <span class="tag">Objetivo principal</span>
+          <h3>Impulsar la moda independiente</h3>
+          <p>La idea es crear un espacio digital para que diseñadores y pequeños emprendimientos puedan mostrar y vender las prendas que hacen.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Comunidad</span>
+          <h3>Conectar personas</h3>
+          <p>La plataforma va a permitir que personas con intereses parecidos puedan armar una tienda entre varias o pedir unirse a una que ya exista.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Experiencia de compra</span>
+          <h3>Facilitar el acceso</h3>
+          <p>Se va a ofrecer un catálogo ordenado, con información de cada prenda y una forma sencilla de realizar las compras.</p>
+        </article>
+        <article class="card">
+          <span class="tag">Confianza</span>
+          <h3>Promover compras seguras</h3>
+          <p>Se va a incorporar una revisión realizada por una persona encargada de la plataforma antes de habilitar una tienda para que pueda vender.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="funcionamiento">
+      <div class="section-number">03 / FUNCIONAMIENTO</div>
+      <h2>¿Cómo funcionaría la plataforma?</h2>
+      <p>Para usar las funciones principales, cada persona tiene que registrarse e iniciar sesión. Desde su cuenta va a poder comprar prendas, crear su propia tienda o solicitar unirse a una que ya esté creada.</p>
+      <div class="steps">
+        <div class="step">
+          <div>
+            <h3>Registro e inicio de sesión</h3>
+            <p>Los usuarios crearían una cuenta con sus datos básicos y una contraseña. Al iniciar sesión podrían acceder a su perfil y a las funciones disponibles.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <h3>Creación o incorporación a una tienda</h3>
+            <p>Si una persona quiere tener su propia tienda, va a completar un formulario con los datos de la marca. También va a poder pedir unirse a otra tienda; en ese caso, sus responsables decidirán si aceptan la solicitud.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <h3>Publicación y administración de prendas</h3>
+            <p>Cuando la tienda esté aprobada, sus integrantes van a poder cargar prendas indicando el nombre, la descripción, las fotos, la categoría, los talles, el precio y el stock. Después van a poder consultar, editar o eliminar sus propias publicaciones.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <h3>Exploración y armado de outfits</h3>
+            <p>Los compradores van a poder recorrer el catálogo, entrar a distintas tiendas y combinar prendas para armar outfits. También van a poder guardar combinaciones hechas con productos de una sola tienda o de varias.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <h3>Carrito y confirmación del pedido</h3>
+            <p>El usuario va a agregar las prendas que quiera comprar al carrito. Si elige productos de distintas tiendas, el sistema los va a separar y va a generar un pedido para cada una. Cada pedido puede tener como máximo seis prendas.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div>
+            <h3>Pago online y seguimiento</h3>
+            <p>El comprador va a pagar online mediante una plataforma de pagos externa. Cuando se confirme el pago, el pedido va a quedar registrado y la tienda va a poder verlo, prepararlo y actualizar su estado.</p>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <p><strong>Ejemplo del límite de compra:</strong> si una persona elige cuatro prendas de una tienda y tres de otra, se crearían dos pedidos separados. El máximo de seis prendas se aplicaría a cada pedido individual, no a toda la compra en conjunto.</p>
+      </div>
+    </section>
+
+    <section id="verificacion">
+      <div class="section-number">04 / SEGURIDAD Y CONFIANZA</div>
+      <h2>Verificación de tiendas</h2>
+      <p>Una de las cosas que quiero tener en cuenta es que no cualquiera pueda publicar productos y empezar a vender sin ningún control. Para evitar posibles estafas y darles más seguridad a los compradores, cada tienda va a tener que pasar por una verificación manual antes de poder vender.</p>
+      <p>Cuando alguien solicite crear una tienda, va a completar un formulario con el nombre de la marca, una descripción, sus redes sociales, qué tipo de prendas quiere vender y fotos de diseños o productos propios. Después, la solicitud va a quedar pendiente hasta que el administrador revise los datos y decida si la aprueba o no.</p>
+      <div class="grid">
+        <article class="card">
+          <span class="pill">Pendiente</span>
+          <h3>En revisión</h3>
+          <p>La solicitud fue enviada y todavía no recibió una respuesta del administrador.</p>
+        </article>
+        <article class="card">
+          <span class="pill">Verificada</span>
+          <h3>Habilitada para vender</h3>
+          <p>La tienda fue aprobada y puede publicar sus productos. Su perfil mostrará una insignia de tienda verificada.</p>
+        </article>
+        <article class="card">
+          <span class="pill">Rechazada</span>
+          <h3>No aprobada</h3>
+          <p>La solicitud no cumplió con los requisitos. Se informaría el motivo y podría volver a presentarse.</p>
+        </article>
+        <article class="card">
+          <span class="pill">Suspendida</span>
+          <h3>Revisión posterior</h3>
+          <p>Una tienda que ya estaba aprobada podría ser suspendida si incumple las reglas de la plataforma.</p>
+        </article>
+      </div>
+      <p style="margin-top:18px">El administrador va a tener un panel privado desde donde podrá ver las solicitudes, revisar la información, aprobar o rechazar tiendas y revisar las denuncias que hagan los usuarios. Si una tienda es aprobada, va a recibir una insignia de verificación visible en su perfil. Esto va a indicar que pasó por el control de la plataforma, aunque no significa que nunca pueda surgir algún inconveniente.</p>
+    </section>
+
+    <section id="secciones">
+      <div class="section-number">05 / ORGANIZACIÓN DEL SITIO</div>
+      <h2>Secciones principales</h2>
+      <div class="grid">
+        <article class="card">
+          <span class="tag">01</span>
+          <h3>Inicio</h3>
+          <p>Presentación de la plataforma, tiendas destacadas, novedades y promociones especiales.</p>
+        </article>
+        <article class="card">
+          <span class="tag">02</span>
+          <h3>Explorar tiendas</h3>
+          <p>Listado de marcas verificadas, con filtros por estilo o categoría y acceso a sus catálogos.</p>
+        </article>
+        <article class="card">
+          <span class="tag">03</span>
+          <h3>Productos</h3>
+          <p>Catálogo de prendas con fotografías, descripción, talles, precio y disponibilidad.</p>
+        </article>
+        <article class="card">
+          <span class="tag">04</span>
+          <h3>Outfit Studio</h3>
+          <p>Espacio para combinar prendas de una o varias tiendas y guardar ideas de outfits.</p>
+        </article>
+        <article class="card">
+          <span class="tag">05</span>
+          <h3>Mi cuenta</h3>
+          <p>Perfil del usuario, solicitudes, favoritos, carrito y seguimiento de pedidos.</p>
+        </article>
+        <article class="card">
+          <span class="tag">06</span>
+          <h3>Panel de tienda</h3>
+          <p>Herramientas para administrar productos, stock, integrantes y pedidos recibidos.</p>
+        </article>
+        <article class="card">
+          <span class="tag">07</span>
+          <h3>Panel de administración</h3>
+          <p>Gestión de usuarios, solicitudes de verificación, tiendas y denuncias.</p>
+        </article>
+        <article class="card">
+          <span class="tag">08</span>
+          <h3>The Last Weekend</h3>
+          <p>Una sección de promociones mensuales: durante el último fin de semana de cada mes se destacaría una tienda y sus ofertas especiales.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="tecnologia">
+      <div class="section-number">06 / DESARROLLO TÉCNICO</div>
+      <h2>¿Cómo se desarrollaría?</h2>
+      <p>Para desarrollar la página voy a utilizar HTML y CSS para armar la estructura y el diseño, PHP para programar las funciones y MySQL, trabajando con phpMyAdmin, para guardar toda la información. La idea es que las acciones que hagan los usuarios desde la página se conecten con la base de datos y que los cambios queden guardados.</p>
+      <h3>Operaciones CRUD principales</h3>
+      <ul>
+        <li><strong>Create (crear):</strong> registrar usuarios, solicitar tiendas, publicar productos y generar pedidos.</li>
+        <li><strong>Read (leer):</strong> consultar perfiles, tiendas, productos, outfits y pedidos.</li>
+        <li><strong>Update (actualizar):</strong> modificar datos de perfil, productos, stock y estados de pedidos o solicitudes.</li>
+        <li><strong>Delete (eliminar):</strong> eliminar publicaciones o registros permitidos según los permisos de cada usuario.</li>
+      </ul>
+      <h3 style="margin-top:25px">Posibles tablas de la base de datos</h3>
+      <p>Para guardar la información, voy a organizar la base de datos en distintas tablas que estén relacionadas entre sí. Por ahora, las principales serían:</p>
+      <div class="db">
+        <div class="db-item"><strong>usuarios</strong><span>Datos de las cuentas, correo y contraseña protegida.</span></div>
+        <div class="db-item"><strong>tiendas</strong><span>Información de cada marca y su creador.</span></div>
+        <div class="db-item"><strong>integrantes</strong><span>Relación entre usuarios, tiendas y roles.</span></div>
+        <div class="db-item"><strong>solicitudes_verificacion</strong><span>Datos enviados y estado de aprobación.</span></div>
+        <div class="db-item"><strong>productos</strong><span>Prendas, talles, precios, fotografías y stock.</span></div>
+        <div class="db-item"><strong>outfits</strong><span>Combinaciones creadas por los usuarios.</span></div>
+        <div class="db-item"><strong>outfit_productos</strong><span>Prendas que forman parte de cada outfit.</span></div>
+        <div class="db-item"><strong>pedidos</strong><span>Comprador, tienda, fecha y estado de cada pedido.</span></div>
+        <div class="db-item"><strong>detalle_pedido</strong><span>Productos y cantidades incluidas en cada pedido.</span></div>
+        <div class="db-item"><strong>pagos</strong><span>Referencia de la operación y estado del pago.</span></div>
+        <div class="db-item"><strong>ofertas</strong><span>Promociones, descuentos y fechas de vigencia.</span></div>
+        <div class="db-item"><strong>reseñas y denuncias</strong><span>Opiniones de compradores y reportes de usuarios.</span></div>
+      </div>
+      <div class="note">
+        <p><strong>Sobre los pagos:</strong> la idea es integrar una pasarela de pago externa y guardar en la base de datos solamente los datos necesarios para identificar y consultar la operación. No se almacenarían números de tarjeta ni datos bancarios sensibles. Para una primera versión escolar, la integración podría trabajarse en un entorno de prueba.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-number">07 / IDENTIDAD VISUAL</div>
+      <h2>Estética y diseño</h2>
+      <p>Quiero que la página tenga una imagen moderna y elegante, relacionada con el mundo de la moda. Para eso voy a usar tonos crema y beige como base, negro para los textos y algunos detalles en dorado suave o champagne.</p>
+      <p>Los títulos van a tener una tipografía más clásica y los textos una más simple, para que sea fácil leer todo. También quiero dejar espacios amplios, usar fotografías de las prendas y mantener una navegación sencilla, para que lo más importante sea el catálogo.</p>
+    </section>
+
+    <section class="closing">
+      <div class="section-number">PROPUESTA FINAL</div>
+      <h2>Una plataforma para darle lugar a nuevas ideas.</h2>
+      <p>En conclusión, la idea de ATELIER es reunir en una misma página la compra y venta de ropa independiente y la posibilidad de que distintas personas puedan crear sus propias marcas. Me gustaría que los emprendimientos tengan un lugar donde mostrar lo que hacen y que los compradores puedan conocer tiendas nuevas. Para llevarlo a cabo voy a trabajar con el registro de usuarios, la administración de productos, las tiendas, los pedidos, los pagos y la verificación, conectando las distintas funciones con una base de datos.</p>
+    </section>
+  </main>
+
+  <footer>
+    <span>ATELIER · PROPUESTA DE PROYECTO CRUD</span>
+    <span>Nombre del proyecto sujeto a modificación</span>
+  </footer>
+</body>
+</html>
